@@ -42,11 +42,21 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const express = require("express");
 const mongoose = require("mongoose");
+dotenv.config();
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://expense-tracker-frontend-self-nine.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
+
+app.use(express.urlencoded({ extended: true }));
 
 const expensemodel = require("./models/expensemodel");
 const salarymodel = require("./models/salarymodel");
@@ -137,9 +147,9 @@ app.delete("/expense/delete/:id", async (req, res) => {
     });
   }
 });
-
+console.log(`${process.env.MONGODB_URI}`)
 mongoose
-  .connect("mongodb://localhost:27017/tracker")
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("DB connected");
   })
